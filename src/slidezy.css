@@ -36,10 +36,9 @@ input {
 .slidezy-track {
     display: flex;
     align-items: center;
-    transform: translateX(0px);
-    transition: transform 0.2s ease;
+    transition: transform 0.35s ease;
 }
 
 .slidezy-slide {
-    flex: 0 0 calc(100% / 3);
+    flex: 0 0 auto;
 }
