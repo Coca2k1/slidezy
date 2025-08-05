@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=deviceidth, initial-scale=1.0" />
+        <title>Slidezy</title>
+
+        <!-- link -->
+        <link rel="stylesheet" href="./src/slidezy.css" />
+        <link rel="stylesheet" href="./src/reset.css" />
+        <style>
+            .slidezy-slide {
+                padding: 30px;
+                font-size: 1.7rem;
+                font-weight: 500;
+                color: yellow;
+                text-align: center;
+            }
+
+            .slidezy-slide:nth-child(1) {
+                background: rgba(15, 79, 130);
+            }
+
+            .slidezy-slide:nth-child(2) {
+                background: rgba(220, 93, 21);
+            }
+
+            .slidezy-slide:nth-child(3) {
+                background: rgba(109, 200, 85);
+            }
+
+            .slidezy-slide:nth-child(4) {
+                background: rgba(99, 225, 189);
+            }
+
+            .slidezy-slide:nth-child(5) {
+                background: rgba(189, 97, 50);
+            }
+
+            .slidezy-slide:nth-child(6) {
+                background: rgba(196, 115, 220);
+            }
+
+            .slidezy-pre {
+                position: absolute;
+                top: 30px;
+                left: 20px;
+            }
+
+            .slidezy-next {
+                position: absolute;
+                top: 30px;
+                right: 20px;
+            }
+
+            .slidezy-pre,
+            .slidezy-next {
+                background: rgba(255, 255, 255);
+                font-size: 1.3rem;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease-in-out;
+            }
+
+            .slidezy-next:hover {
+                transform: translateX(5px);
+            }
+
+            .slidezy-pre:hover {
+                transform: translateX(-5px);
+            }
+        </style>
+    </head>
+    <body>
+        <div id="my-slider">
+            <div>Slide 1</div>
+            <div>Slide 2</div>
+            <div>Slide 3</div>
+            <div>Slide 4</div>
+            <div>Slide 5</div>
+            <div>Slide 6</div>
+        </div>
+        <script src="./src/slidezy.js"></script>
+        <script>
+            const mySlider = new Slidezy("#my-slider");
+        </script>
+    </body>
+</html>
