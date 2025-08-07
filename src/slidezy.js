@@ -9,13 +9,17 @@ function Slidezy(selector, options = {}) {
     this.opt = Object.assign(
         {
             items: 1,
+            speed: 300,
             loop: true,
+            autoPlay: false,
         },
         options
     );
     this.slides = Array.from(this.container.children);
 
     this._init();
+
+    this._updatePosition();
 }
 
 Slidezy.prototype._init = function () {
@@ -32,11 +36,24 @@ Slidezy.prototype._createTrack = function () {
     this.track = document.createElement("div");
     this.track.className = "slidezy-track";
 
-    this.slides.forEach((slide) => {
+    if (this.opt.loop) {
+        const cloneHead = this.slides
+            .slice(-this.opt.items)
+            .map((clone) => clone.cloneNode(true));
+
+        const cloneTail = this.slides
+            .slice(0, this.opt.items)
+            .map((clone) => clone.cloneNode(true));
+
+        this.slides = cloneHead.concat(this.slides.concat(cloneTail));
+    }
+
+    this.slides.forEach((slide, index) => {
         slide.classList.add("slidezy-slide");
         slide.style.flexBasis = `${100 / this.opt.items}%`;
         this.track.append(slide);
     });
+
     this.container.append(this.track);
 };
 
@@ -52,25 +69,57 @@ Slidezy.prototype._createNavigation = function () {
 
     this.container.append(this.nextBtn, this.preBtn);
 
-    this.currentStep = 0;
+    this.currentStep = this.opt.loop ? this.opt.items : 0;
+
     // events
     this.preBtn.onclick = () => this.moveSlide(-1);
     this.nextBtn.onclick = () => this.moveSlide(1);
 };
 
 Slidezy.prototype.moveSlide = function (step) {
+    if (this._isTransitioning) return;
+    this._isTransitioning = true;
+
+    // 0 <= this.currentStep + step <= this.slides.length - this.opt.items
+    this.maxIndex = this.slides.length - this.opt.items;
+
+    this.currentStep = Math.min(
+        Math.max(this.currentStep + step, 0),
+        this.maxIndex
+    );
+
+    // loop
+    setTimeout(() => this._infiniteLoop(), this.opt.speed);
+
+    this._updatePosition();
+};
+
+Slidezy.prototype._infiniteLoop = function () {
     if (this.opt.loop) {
-        this.currentStep =
-            (this.currentStep + step + this.slides.length) % this.slides.length;
-    } else {
-        // 0 <= this.currentStep + step <= this.slides.length - this.opt.items
-        this.currentStep = Math.min(
-            Math.max(this.currentStep + step, 0),
-            this.slides.length - this.opt.items
-        );
+        if (this.currentStep >= this.maxIndex) {
+            this.currentStep = this.opt.items;
+        }
+        if (this.currentStep <= 0) {
+            this.currentStep = this.maxIndex - this.opt.items;
+        }
+
+        this._updatePosition(true);
     }
+    this._isTransitioning = false;
+};
+
+Slidezy.prototype._updatePosition = function (instant = false) {
+    this.track.style.transition = instant
+        ? "none"
+        : `transform ${this.opt.speed}ms ease`;
 
     this.track.style.transform = `translateX(${
         (-this.currentStep * 100) / this.opt.items
     }%)`;
+};
+
+Slidezy.prototype.autoPlay = function () {
+    setInterval(() => {
+        this.moveSlide(1);
+    }, 2000);
 };
