@@ -41,3 +41,23 @@ input {
 .slidezy-slide {
     flex: 0 0 auto;
 }
+
+.slidezy-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.slidezy-dot {
+    width: 30px;
+    height: 10px;
+    border-radius: 10px;
+    background: #eaeaea;
+}
+
+.slidezy-dot.active {
+    width: 50px;
+    background: #ccc;
+}

@@ -11,6 +11,7 @@ function Slidezy(selector, options = {}) {
             items: 1,
             speed: 300,
             loop: true,
+            nav: true,
             autoPlay: false,
         },
         options
@@ -29,6 +30,9 @@ Slidezy.prototype._init = function () {
     this._createTrack();
 
     // buttons
+    this._createButtons();
+
+    // navigation
     this._createNavigation();
 };
 
@@ -57,7 +61,7 @@ Slidezy.prototype._createTrack = function () {
     this.container.append(this.track);
 };
 
-Slidezy.prototype._createNavigation = function () {
+Slidezy.prototype._createButtons = function () {
     this.nextBtn = document.createElement("button");
     this.preBtn = document.createElement("button");
 
@@ -74,6 +78,34 @@ Slidezy.prototype._createNavigation = function () {
     // events
     this.preBtn.onclick = () => this.moveSlide(-1);
     this.nextBtn.onclick = () => this.moveSlide(1);
+};
+
+Slidezy.prototype._createNavigation = function () {
+    this.navWrapper = document.createElement("div");
+    this.navWrapper.className = "slidezy-nav";
+
+    this.navCount = Math.ceil(
+        this.opt.loop
+            ? (this.slides.length - this.opt.items * 2) / this.opt.items
+            : this.slides.length / this.opt.items
+    );
+
+    for (let i = 0; i < this.navCount; i++) {
+        const dot = document.createElement("button");
+        dot.className = "slidezy-dot";
+
+        this.navWrapper.append(dot);
+
+        dot.onclick = () => {
+            this.currentStep = this.opt.loop
+                ? i * this.opt.items + this.opt.items
+                : i * this.opt.items;
+
+            this._updatePosition();
+        };
+    }
+
+    this.container.append(this.navWrapper);
 };
 
 Slidezy.prototype.moveSlide = function (step) {
@@ -98,14 +130,34 @@ Slidezy.prototype._infiniteLoop = function () {
     if (this.opt.loop) {
         if (this.currentStep >= this.maxIndex) {
             this.currentStep = this.opt.items;
-        }
-        if (this.currentStep <= 0) {
-            this.currentStep = this.maxIndex - this.opt.items;
+            this._updatePosition(true);
         }
 
-        this._updatePosition(true);
+        if (this.currentStep <= 0) {
+            this.currentStep = this.maxIndex - this.opt.items;
+            this._updatePosition(true);
+        }
     }
     this._isTransitioning = false;
+};
+
+Slidezy.prototype._updateNav = function () {
+    let realIndex = this.currentStep;
+
+    if (this.opt.loop) {
+        const slideCount = this.slides.length - this.opt.items * 2;
+
+        realIndex =
+            (this.currentStep - this.opt.items + slideCount) % slideCount;
+    }
+
+    let pageIndex = Math.floor(realIndex / this.opt.items);
+
+    const dots = Array.from(this.navWrapper.children);
+
+    dots.forEach((dot, index) => {
+        dot.classList.toggle("active", index === pageIndex);
+    });
 };
 
 Slidezy.prototype._updatePosition = function (instant = false) {
@@ -116,6 +168,10 @@ Slidezy.prototype._updatePosition = function (instant = false) {
     this.track.style.transform = `translateX(${
         (-this.currentStep * 100) / this.opt.items
     }%)`;
+
+    if (this.opt.nav & !instant) {
+        this._updateNav();
+    }
 };
 
 Slidezy.prototype.autoPlay = function () {
