@@ -101,12 +101,21 @@
             <!-- <div class="slide-7">Slide 7</div> -->
             <!-- <div class="slide-8">Slide 8</div> -->
         </div>
+
+        <!-- <div class="my-controls">
+            <button class="slide-pre">Pre</button>
+            <button class="slide-next">Next</button>
+        </div> -->
         <script src="./src/slidezy.js"></script>
         <script>
             const mySlider = new Slidezy("#my-slider", {
-                items: 1,
-                // loop: false,
+                items: 3,
+                // loop: true,
                 // speed: 2000,
+                // controls: false,
+                // prevButton: ".slide-pre",
+                // nextButton: ".slide-next",
+                // slideBy: 3,
             });
             // mySlider.autoPlay();
         </script>

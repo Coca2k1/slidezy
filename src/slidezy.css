@@ -61,3 +61,22 @@ input {
     width: 50px;
     background: #ccc;
 }
+
+.my-controls {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 10px;
+}
+
+.slide-pre,
+.slide-next {
+    width: 100px;
+    height: 50px;
+    background: rgba(192, 120, 89);
+    border-radius: 20px;
+
+    color: #fff;
+    font-size: 1.6rem;
+}
