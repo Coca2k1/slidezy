@@ -143,25 +143,34 @@ Slidezy.prototype.moveSlide = function (step) {
 };
 
 Slidezy.prototype._infiniteLoop = function () {
+    // 4 5 6 (clone) 1 2 3 4 5 6 (clone) 1 2 3
+    // 0 1 2         3 4 5 6 7 8         9 10 11
     if (this.opt.loop) {
-        if (this.currentStep >= this.maxIndex) {
-            this.currentStep = this.opt.items;
+        const slideCount = this._getSlideCount();
+        if (this.currentStep > slideCount) {
+            this.currentStep -= slideCount;
             this._updatePosition(true);
         }
 
-        if (this.currentStep <= 0) {
-            this.currentStep = this.maxIndex - this.opt.items;
+        if (this.currentStep < this.opt.items) {
+            this.currentStep += slideCount;
             this._updatePosition(true);
         }
     }
     this._isTransitioning = false;
 };
 
+Slidezy.prototype._getSlideCount = function () {
+    return this.opt.loop
+        ? this.slides.length - this.opt.items * 2
+        : this.slides.length;
+};
+
 Slidezy.prototype._updateNav = function () {
     let realIndex = this.currentStep;
 
     if (this.opt.loop) {
-        const slideCount = this.slides.length - this.opt.items * 2;
+        const slideCount = this._getSlideCount();
 
         realIndex =
             (this.currentStep - this.opt.items + slideCount) % slideCount;
