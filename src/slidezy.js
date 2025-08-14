@@ -18,6 +18,8 @@ function Slidezy(selector, options = {}) {
             nextButton: null,
             slideBy: 1,
             autoPlay: false,
+            autoPlayTimeout: 3000,
+            autoPlayHoverPause: true,
         },
         options
     );
@@ -41,6 +43,33 @@ Slidezy.prototype._init = function () {
 
     // navigation
     this._createNavigation();
+
+    if (this.opt.autoPlay) {
+        this._startAutoPlay();
+
+        if (this.opt.autoPlayHoverPause) {
+            this.container.onmouseenter = () => {
+                this._stopAutoPlay();
+            };
+
+            this.container.onmouseleave = () => {
+                this._startAutoPlay();
+            };
+        }
+    }
+};
+
+Slidezy.prototype._startAutoPlay = function () {
+    if (this.autoPlayTimer) return;
+
+    this.autoPlayTimer = setInterval(() => {
+        this.moveSlide(this.opt.slideBy);
+    }, this.opt.autoPlayTimeout);
+};
+
+Slidezy.prototype._stopAutoPlay = function () {
+    clearInterval(this.autoPlayTimer);
+    this.autoPlayTimer = null;
 };
 
 Slidezy.prototype._createTrack = function () {
@@ -197,10 +226,4 @@ Slidezy.prototype._updatePosition = function (instant = false) {
     if (this.opt.nav & !instant) {
         this._updateNav();
     }
-};
-
-Slidezy.prototype.autoPlay = function () {
-    setInterval(() => {
-        this.moveSlide(1);
-    }, 2000);
 };
