@@ -55,6 +55,7 @@ input {
     height: 10px;
     border-radius: 10px;
     background: #eaeaea;
+    transition: width 0.3s ease-in-out;
 }
 
 .slidezy-dot.active {
